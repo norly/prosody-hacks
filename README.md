@@ -25,3 +25,21 @@ drop messages with the same message ID, or no message ID at all.
 To avoid silent message loss at the receiving end when sending
 messages to a Monal user, this plugin generates a random message ID
 (a UUID) for every message stanza.
+
+
+
+Patches
+--------
+
+### `patch-hangouts`
+
+This is now obsolete.
+
+It was used to hide users who were online online via Google Hangouts,
+as Hangouts would report presence via XMPP S2S, but silently drop
+incoming messages. It was useless to see these people online unless
+they ever used a proper XMPP client to log into Hangouts, at which
+point S2S worked just like GTalk did before.
+
+This has become obsolete now that Google has ended the XMPP S2S
+support altogether.

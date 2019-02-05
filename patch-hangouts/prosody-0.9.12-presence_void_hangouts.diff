@@ -1,0 +1,42 @@
+--- a/usr/lib/prosody/modules/mod_presence.lua
++++ b/usr/lib/prosody/modules/mod_presence.lua
+@@ -313,6 +312,19 @@
+ 		if t ~= nil and t ~= "unavailable" and t ~= "error" then -- check for subscriptions and probes sent to bare JID
+ 			return handle_inbound_presence_subscriptions_and_probes(origin, stanza, jid_bare(stanza.attr.from), jid_bare(stanza.attr.to));
+ 		end
++
++		local from_resource = string.gsub(stanza.attr.from, "^[^/]*/", "", 1);
++		if from_resource ~= stanza.attr.from then
++			if string.match(from_resource, "^Messaging%x%x%x%x%x%x%x%x?%x?")
++			or string.match(from_resource, "^messaging%-smgmailw%x%x%x%x%x%x%x%x")
++			or string.match(from_resource, "^messaging%-AChromeExtensionw%x%x%x%x%x%x%x%x")
++			or string.match(from_resource, "^messaging%-TalkGadgetw%x%x%x%x%x%x%x%x")
++			or string.match(from_resource, "^messaging%-lcsw_hangouts%x%x%x%x%x%x%x%x")
++			or string.match(from_resource, "^messaging%-lcsw_hangouts_%x%x%x%x%x%x%x%x") then
++				log("debug", "Voiding presence from: "..stanza.attr.from);
++				stanza.attr.type = "unavailable";
++			end
++		end
+
+ 		local user = bare_sessions[to];
+ 		if user then
+@@ -338,6 +350,19 @@
+ 		return handle_inbound_presence_subscriptions_and_probes(origin, stanza, jid_bare(stanza.attr.from), jid_bare(stanza.attr.to));
+ 	end
+
++	local from_resource = string.gsub(stanza.attr.from, "^[^/]*/", "", 1);
++	if from_resource ~= stanza.attr.from then
++		if string.match(from_resource, "^Messaging%x%x%x%x%x%x%x%x?%x?")
++		or string.match(from_resource, "^messaging%-smgmailw%x%x%x%x%x%x%x%x")
++		or string.match(from_resource, "^messaging%-AChromeExtensionw%x%x%x%x%x%x%x%x")
++		or string.match(from_resource, "^messaging%-TalkGadgetw%x%x%x%x%x%x%x%x")
++		or string.match(from_resource, "^messaging%-lcsw_hangouts%x%x%x%x%x%x%x%x")
++		or string.match(from_resource, "^messaging%-lcsw_hangouts_%x%x%x%x%x%x%x%x") then
++			log("debug", "Voiding presence from: "..stanza.attr.from);
++			stanza.attr.type = "unavailable";
++		end
++	end
++
+ 	local session = full_sessions[stanza.attr.to];
+ 	if session then
+ 		-- TODO fire post processing event
